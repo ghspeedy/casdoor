@@ -18,36 +18,31 @@ import (
 	"net/http"
 
 	"github.com/beego/beego/context"
-	"github.com/casdoor/casdoor/conf"
-	"github.com/casdoor/casdoor/object"
 )
 
 const (
-	headerOrigin       = "Origin"
-	headerAllowOrigin  = "Access-Control-Allow-Origin"
-	headerAllowMethods = "Access-Control-Allow-Methods"
-	headerAllowHeaders = "Access-Control-Allow-Headers"
+	headerOrigin           = "Origin"
+	headerAllowOrigin      = "Access-Control-Allow-Origin"
+	headerAllowMethods     = "Access-Control-Allow-Methods"
+	headerAllowHeaders     = "Access-Control-Allow-Headers"
+	headerAllowCredentials = "Access-Control-Allow-Credentials"
 )
 
 func CorsFilter(ctx *context.Context) {
 	origin := ctx.Input.Header(headerOrigin)
-	originConf := conf.GetConfigString("origin")
+	//originConf := conf.GetConfigString("origin")
 
-	if origin != "" && originConf != "" && origin != originConf {
-		if object.IsOriginAllowed(origin) {
-			ctx.Output.Header(headerAllowOrigin, origin)
-			ctx.Output.Header(headerAllowMethods, "POST, GET, OPTIONS, DELETE")
-			ctx.Output.Header(headerAllowHeaders, "Content-Type, Authorization")
-		} else {
-			ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
-			return
-		}
-
-		if ctx.Input.Method() == "OPTIONS" {
-			ctx.ResponseWriter.WriteHeader(http.StatusOK)
-			return
-		}
-	}
+	//if origin != "" && originConf != "" && origin != originConf {
+	//
+	//	if ctx.Input.Method() == "OPTIONS" {
+	//		ctx.ResponseWriter.WriteHeader(http.StatusOK)
+	//		return
+	//	}
+	//}
+	ctx.Output.Header(headerAllowOrigin, origin)
+	ctx.Output.Header(headerAllowMethods, "POST, GET, OPTIONS, DELETE")
+	ctx.Output.Header(headerAllowHeaders, "Content-Type, Authorization")
+	ctx.Output.Header(headerAllowCredentials, "true")
 
 	if ctx.Input.Method() == "OPTIONS" {
 		ctx.Output.Header(headerAllowOrigin, "*")
